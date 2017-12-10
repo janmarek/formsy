@@ -1,0 +1,42 @@
+.App-header {
+    text-align: center;
+    background-color: #222;
+    padding: 20px;
+    color: white;
+}
+
+.App .menu {
+    margin: 0;
+    background-color: #222;
+    text-align: center;
+}
+
+.App .menu a {
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    display: inline-block;
+    color: rgb(151, 184, 216);
+    margin: 0 0 0 1px;
+}
+
+
+.App .menu a:hover {
+    color: white;
+    background: #2C3F5D;
+}
+
+.App .menu a.active {
+    background: white;
+    color: #2C3F5D;
+}
+
+.App-title {
+    font-size: 1.5em;
+}
+
+.App-intro {
+    padding: 2em;
+    max-width: 800px;
+    margin: 0 auto;
+}
