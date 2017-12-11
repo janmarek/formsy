@@ -4,14 +4,30 @@ import * as formState from './formState';
 import toArrayPath from './toArrayPath';
 import getFieldValue from './getFieldValue';
 
+export function setValue(values, arrayPath, value) {
+    return set(arrayPath, value, values);
+}
+
+export const getValue = get;
+
 class Form {
 
-    constructor({getState, setState, validate, submitHandler, initValues}) {
+    constructor({
+        getState,
+        setState,
+        validate,
+        submitHandler,
+        initValues,
+        setValueCallback,
+        getValueCallback
+    }) {
         this.getStateCallback = getState;
         this.setState = setState;
         this.validate = validate || (() => null);
         this.submitHandler = submitHandler;
         this.initValues = initValues;
+        this.setValueCallback = setValueCallback || setValue;
+        this.getValueCallback = getValueCallback || getValue;
     }
 
     getState() {
@@ -27,7 +43,7 @@ class Form {
     }
 
     getValue(path) {
-        return get(this.getValues(), toArrayPath(path));
+        return this.getValueCallback(this.getValues(), toArrayPath(path));
     }
 
     getErrors(path) {
@@ -45,10 +61,6 @@ class Form {
     setValues(values) {
         const state = this.getState();
         this.setState(formState.setValues(state, values, this.validate));
-    }
-
-    setFieldValue(values, name, value) {
-        return set(toArrayPath(name), value, values);
     }
 
     // field props
@@ -114,9 +126,9 @@ class Form {
     handleChange = event => {
         const state = this.getState();
 
-        const newValues = this.setFieldValue(
+        const newValues = this.setValueCallback(
             state.values,
-            event.target.name,
+            toArrayPath(event.target.name),
             getFieldValue(event.target)
         );
 

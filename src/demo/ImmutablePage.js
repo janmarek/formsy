@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Form} from '../form';
 import FormStateExplorer from './FormStateExplorer';
+import {fromJS, Map} from 'immutable';
 
 let lastPersonId = 0;
 
@@ -11,7 +12,7 @@ function validateGroupName(name) {
 function validatePerson(person) {
     const errors = {};
 
-    if (person.name === '') {
+    if (person.get('name') === '') {
         errors.name = 'Missing name.';
     }
 
@@ -20,19 +21,19 @@ function validatePerson(person) {
 
 function validateForm(values) {
     return {
-        name: validateGroupName(values.name),
-        people: values.people.map(validatePerson),
+        name: validateGroupName(values.get('name')),
+        people: values.get('people').map(validatePerson).toArray(),
     };
 }
 
-class RepeaterPage extends Component {
+class ImmutablePage extends Component {
     constructor() {
         super();
 
-        const initValues = {
+        const initValues = fromJS({
             name: '',
             people: [],
-        };
+        });
 
         this.form = new Form({
             getState: () => this.state.formState,
@@ -40,6 +41,8 @@ class RepeaterPage extends Component {
             validate: validateForm,
             submitHandler: this.handleSubmit,
             initValues,
+            setValueCallback: (values, arrayPath, value) => values.setIn(arrayPath, value),
+            getValueCallback: (values, arrayPath) => values.getIn(arrayPath),
         });
         this.state = {
             formState: null,
@@ -49,28 +52,26 @@ class RepeaterPage extends Component {
     addPerson = () => {
         const values = this.form.getValues();
 
-        this.form.setValues({
-            ...values,
-            people: values.people.concat({
+        this.form.setValues(
+            values.update('people', people => people.push(Map({
                 id: ++lastPersonId,
                 name: '',
                 sex: null,
-            }),
-        });
+            })))
+        );
     }
 
     removePerson = index => {
         const values = this.form.getValues();
 
-        this.form.setValues({
-            ...values,
-            people: values.people.filter(person => person.id != index),
-        });
+        this.form.setValues(
+            values.update('people', people => people.filter(person => person.get('id') != index))
+        );
     }
 
     handleSubmit = (values, done) => {
         setTimeout(() => {
-            alert(`You have ${values.people.length} people`);
+            alert(`You have ${values.get('people').size} people`);
             done();
         }, 500);
     }
@@ -86,9 +87,9 @@ class RepeaterPage extends Component {
     }
 
     renderPeopleList() {
-        const people = this.form.getValues().people;
+        const people = this.form.getValues().get('people');
 
-        if (people.length === 0) {
+        if (people.size === 0) {
             return <p>No people</p>;
         }
 
@@ -102,7 +103,7 @@ class RepeaterPage extends Component {
             </thead>
             <tbody>
                 {people.map((person, index) => {
-                    return <tr key={person.id}>
+                    return <tr key={person.get('id')}>
                         <td>
                             <input type="text" className="input"
                                 {...this.form.input(`people[${index}].name`)} />
@@ -116,7 +117,7 @@ class RepeaterPage extends Component {
                             </select>
                         </td>
                         <td>
-                            <a className="button" onClick={() => this.removePerson(person.id)}>Remove</a>
+                            <a className="button" onClick={() => this.removePerson(person.get('id'))}>Remove</a>
                         </td>
                     </tr>;
                 })}
@@ -127,7 +128,7 @@ class RepeaterPage extends Component {
     render() {
         return <div>
             <p className="source">
-                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/RepeaterPage.js">Source Code</a>
+                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/ImmutablePage.js">Source Code</a>
             </p>
             <form onSubmit={this.form.handleSubmit}>
                 <div>
@@ -157,4 +158,4 @@ class RepeaterPage extends Component {
 
 }
 
-export default RepeaterPage;
+export default ImmutablePage;
