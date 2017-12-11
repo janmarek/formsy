@@ -82,6 +82,9 @@ class ValidationPage extends Component {
 
     render() {
         return <div>
+            <p className="source">
+                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/ValidationPage.js">Source Code</a>
+            </p>
             <form onSubmit={this.form.handleSubmit}>
                 <div>
                     <label className="label">Name</label>

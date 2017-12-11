@@ -126,6 +126,9 @@ class RepeaterPage extends Component {
 
     render() {
         return <div>
+            <p className="source">
+                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/RepeaterPage.js">Source Code</a>
+            </p>
             <form onSubmit={this.form.handleSubmit}>
                 <div>
                     <label className="label">Group Name</label>
@@ -136,9 +139,9 @@ class RepeaterPage extends Component {
                 <h3>People</h3>
                 {this.renderPeopleList()}
                 <p>
-                    <button className="button" onClick={this.addPerson}>
+                    <a className="button" onClick={this.addPerson}>
                         Add Person
-                    </button>
+                    </a>
                 </p>
 
                 <p>

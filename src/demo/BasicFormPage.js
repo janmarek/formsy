@@ -24,6 +24,9 @@ class BasicFormPage extends Component {
 
     render() {
         return <div>
+            <p className="source">
+                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/BasicFormPage.js">Source Code</a>
+            </p>
             <form onSubmit={this.form.handleSubmit}>
                 <div>
                     <label className="label">Text</label>

@@ -119,6 +119,9 @@ class CustomSetPage extends Component {
 
     render() {
         return <div>
+            <p className="source">
+                <a href="https://github.com/janmarek/formsy/blob/master/src/demo/CustomSetPage.js">Source Code</a>
+            </p>
             <form onSubmit={this.form.handleSubmit}>
                 <div>
                     <label className="label">RGB</label>
