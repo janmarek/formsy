@@ -9,6 +9,7 @@ import ValidationPage from './demo/ValidationPage';
 import BasicFormPage from './demo/BasicFormPage';
 import RepeaterPage from './demo/RepeaterPage';
 import CustomSetPage from './demo/CustomSetPage';
+import ReduxPage from './demo/ReduxPage';
 
 class App extends Component {
 
@@ -22,6 +23,7 @@ class App extends Component {
                     <NavLink to="/basic" activeClassName="active">Basic Example</NavLink>
                     <NavLink to="/validation" activeClassName="active">Validation</NavLink>
                     <NavLink to="/repeater" activeClassName="active">Repeater</NavLink>
+                    <NavLink to="/redux" activeClassName="active">Redux</NavLink>
                     <NavLink to="/custom-set" activeClassName="active">Custom Set Value</NavLink>
                 </div>
                 <div className="App-intro">
@@ -29,6 +31,7 @@ class App extends Component {
                     <Route path="/validation" component={ValidationPage} />
                     <Route path="/repeater" component={RepeaterPage} />
                     <Route path="/custom-set" component={CustomSetPage} />
+                    <Route path="/redux" component={ReduxPage} />
                 </div>
             </div>
         </Router>;
