@@ -1,7 +1,7 @@
-### React.js Form Library
+## React.js Form Library
 
 (work in progress)
 
-## Demo
+### Demo
 
 https://janmarek.github.io/formsy/#/basic
