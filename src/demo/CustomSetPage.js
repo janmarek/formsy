@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Form} from '../form';
+import {Form, setValue} from '../form';
 import FormStateExplorer from './FormStateExplorer';
+import isEqual from 'lodash/isEqual';
 
 function isValidRgb(color) {
     var re = /^#[0-9A-F]{6}$/;
@@ -43,6 +44,7 @@ class CustomSetPage extends Component {
                 green: '255',
                 blue: '255',
             },
+            setValueCallback: this.setFormValue,
         });
         this.state = {
             formState: null,
@@ -75,18 +77,31 @@ class CustomSetPage extends Component {
         return parseInt(values.red, 10) + parseInt(values.blue, 10) + parseInt(values.green, 10) < limit;
     }
 
-    handleChangeRgb = event => {
-        const value = event.target.value;
-
-        this.form.handleChange(event);
-        if (isValidRgb(value)) {
-            this.form.setValues({
+    setFormValue = (values, arrayPath, value) => {
+        if (isEqual(arrayPath, ['rgb']) && isValidRgb(value)) {
+            return {
                 rgb: value,
                 red: parseInt(value.substr(1, 2), 16),
                 green: parseInt(value.substr(3, 2), 16),
                 blue: parseInt(value.substr(5, 2), 16),
-            })
+            };
         }
+
+        if (
+            (isEqual(arrayPath, ['red']) || isEqual(arrayPath, ['green']) || isEqual(arrayPath, ['blue'])) &&
+            isValidColorPart(value)
+        ) {
+            const color = arrayPath[0];
+            return {
+                ...values,
+                [color]: value,
+                rgb: '#' + this.colorPartToString(color === 'red' ? value : values.red) +
+                    this.colorPartToString(color === 'green' ? value : values.green) +
+                    this.colorPartToString(color === 'blue' ? value : values.blue),
+            };
+        }
+
+        return setValue(values, arrayPath, value);
     }
 
     colorPartToString(input) {
@@ -100,23 +115,6 @@ class CustomSetPage extends Component {
         }
     }
 
-    handleChangeColorPart = event => {
-        this.form.handleChange(event);
-
-        setTimeout(() => {
-            const values = this.form.getValues();
-
-            if (isValidColorPart(values.red) && isValidColorPart(values.green) && isValidColorPart(values.blue)) {
-                this.form.setValues({
-                    ...values,
-                    rgb: '#' + this.colorPartToString(values.red) +
-                        this.colorPartToString(values.green) +
-                        this.colorPartToString(values.blue),
-                })
-            }
-        });
-    }
-
     render() {
         return <div>
             <p className="source">
@@ -126,25 +124,25 @@ class CustomSetPage extends Component {
                 <div>
                     <label className="label">RGB</label>
                     <input type="text" className="input"
-                        {...this.form.input('rgb')} onChange={this.handleChangeRgb} />
+                        {...this.form.input('rgb')} />
                     {this.renderErrors('rgb')}
                 </div>
                 <div>
                     <label className="label">Red</label>
                     <input type="text" className="input"
-                        {...this.form.input('red')} onChange={this.handleChangeColorPart} />
+                        {...this.form.input('red')} />
                     {this.renderErrors('red')}
                 </div>
                 <div>
                     <label className="label">Green</label>
                     <input type="text" className="input"
-                        {...this.form.input('green')} onChange={this.handleChangeColorPart} />
+                        {...this.form.input('green')} />
                     {this.renderErrors('green')}
                 </div>
                 <div>
                     <label className="label">Blue</label>
                     <input type="text" className="input"
-                        {...this.form.input('blue')} onChange={this.handleChangeColorPart} />
+                        {...this.form.input('blue')} />
                     {this.renderErrors('blue')}
                 </div>
 
